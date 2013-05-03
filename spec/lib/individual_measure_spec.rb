@@ -1,4 +1,5 @@
 require 'individual_measure'
+require 'date'
 
 describe IndividualMeasure do
 

@@ -1,4 +1,5 @@
 require 'individual_encounter'
+require 'date'
 
 describe IndividualEncounter do
 
