@@ -57,6 +57,13 @@ class IndividualMeasure
     end
   end
 
+  def patient_age_between(left,right)
+    denominator_validation :patient_age do |answers|
+      next {:pass => true} if (left..right).cover? answers[:patient_age]
+      {:pass => false, :reason => "Patient was not between #{left} and #{right} years of age during the year of encounter."}
+    end
+  end
+
   def numerator_question(qid, args)
     self.numerator_fields[qid] = args
   end
