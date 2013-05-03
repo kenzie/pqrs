@@ -56,6 +56,14 @@ describe IndividualMeasure do
 
   end
 
+  describe '#find_by_year_and_number' do
+
+    it "creates a Measure from a year and number" do
+      expect(IndividualMeasure.find_by_year_and_number(2012, 1)).to eq measure
+    end
+
+  end
+
   context 'denominator_fields' do
 
     it 'has 2 questions' do
