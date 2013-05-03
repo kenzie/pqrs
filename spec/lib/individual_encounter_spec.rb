@@ -38,13 +38,13 @@ describe IndividualEncounter do
     end
 
     it 'can set an ICD9 code' do
-      encounter.denominator_answers[:icd9] = '250.00'
-      expect(encounter.denominator_answers[:icd9]).to eq '250.00'
+      encounter.denominator_answers[:icd9_code] = '250.00'
+      expect(encounter.denominator_answers[:icd9_code]).to eq '250.00'
     end
 
     it 'can set an CPT2 code' do
-      encounter.denominator_answers[:cpt2] = '98765'
-      expect(encounter.denominator_answers[:cpt2]).to eq '98765'
+      encounter.denominator_answers[:cpt2_code] = '98765'
+      expect(encounter.denominator_answers[:cpt2_code]).to eq '98765'
     end
 
   end
@@ -69,7 +69,22 @@ describe IndividualEncounter do
   end
 
   describe '.eligible?' do
-    # return true if denominator validation passes
+
+    it 'returns true if denominators all pass' do
+      encounter.denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => true, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
+      expect(encounter.eligible?).to eq true
+    end
+
+    it 'returns false if all denominators fail' do
+      encounter.denominator_answers = {:service_date => Date.parse('2013-01-01'), :patient_is_fee_for_service => false, :patient_age => 12, :icd9_code => '150.00', :cpt2_code => '12345'}
+      expect(encounter.eligible?).to eq false
+    end
+
+    it 'returns false if any denominator fails' do
+      encounter.denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => false, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
+      expect(encounter.eligible?).to eq false
+    end
+
   end
 
   describe '.performance' do

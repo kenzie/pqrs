@@ -18,6 +18,10 @@ class IndividualMeasure
     IndividualMeasure.new(:year => measure_slug[1], :number => measure_slug[2])
   end
 
+  def self.find_by_year_and_number(year, number)
+    IndividualMeasure.new(:year => year, :number => number)
+  end
+
   def ==(msr)
     self.slug == msr.slug
   end
@@ -46,6 +50,10 @@ class IndividualMeasure
 
   def numerator_validation(&block)
     self.numerator_validations = block
+  end
+
+  def validate_denominators_for(denominator_answers)
+    denominator_validations.all? { |den| den.last.call(denominator_answers) == true }
   end
 
   def data_file_path

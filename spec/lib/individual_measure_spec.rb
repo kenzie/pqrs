@@ -88,4 +88,23 @@ describe IndividualMeasure do
 
   end
 
+  context 'validate_denominators_for' do
+
+    it 'returns true if denominators all pass' do
+      denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => true, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
+      expect(measure.validate_denominators_for(denominator_answers)).to eq true
+    end
+
+    it 'returns false if all denominators fail' do
+      denominator_answers = {:service_date => Date.parse('2013-01-01'), :patient_is_fee_for_service => false, :patient_age => 12, :icd9_code => '150.00', :cpt2_code => '12345'}
+      expect(measure.validate_denominators_for(denominator_answers)).to eq false
+    end
+
+    it 'returns false if any denominator fails' do
+      denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => false, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
+      expect(measure.validate_denominators_for(denominator_answers)).to eq false
+    end
+
+  end
+
 end
