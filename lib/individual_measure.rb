@@ -1,6 +1,7 @@
 class IndividualMeasure
 
-  attr_accessor :year, :number, :slug, :denominator_validations, :denominator_fields, :numerator_validations, :numerator_fields
+  attr_reader :year, :number, :slug, :denominator_validations, :denominator_fields, :numerator_fields
+  attr_accessor :numerator_validations
 
   def initialize(args = {})
     @year = args[:year].to_i
