@@ -88,7 +88,27 @@ describe IndividualEncounter do
   end
 
   describe '.performance' do
-    # return numerator validation status (:met, :excluded, :notmet)
+
+    it 'returns :met if numerator passes (>9)' do
+      encounter.numerator_answers = {:q1 => 9.1, :q2 => nil}
+      expect(encounter.performance).to eq :pass
+    end
+
+    it 'returns :exclude if numerator is excluded (7..9)' do
+      encounter.numerator_answers = {:q1 => 8.5, :q2 => nil}
+      expect(encounter.performance).to eq :exclude
+    end
+
+    it 'returns :exclude if numerator is excluded (<7)' do
+      encounter.numerator_answers = {:q1 => 6, :q2 => nil}
+      expect(encounter.performance).to eq :exclude
+    end
+
+    it 'returns :fail if numerator fails' do
+      encounter.numerator_answers = {:q1 => nil, :q2 => true}
+      expect(encounter.performance).to eq :fail
+    end
+
   end
 
 end

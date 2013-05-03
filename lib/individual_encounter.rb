@@ -21,4 +21,8 @@ class IndividualEncounter
     measure.validate_denominators(self.denominator_answers)
   end
 
+  def performance
+    measure.validate_numerators(self.numerator_answers).last
+  end
+
 end
