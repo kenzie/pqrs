@@ -110,11 +110,11 @@ describe IndividualMeasure do
       end
 
       it 'returns failing validations with reasons if all denominators fail' do
-        expect(measure.validate_denominators(failing_denominator_answers)).to eq :icd9_code=>{:pass=>false, :reason=>"Patient must have one of the available ICD-9 codes."}, :cpt2_code=>{:pass=>false, :reason=>"Patient must have one of the available CPT-II codes."}, :patient_age=>{:pass=>false, :reason=>"Patient was not between 18 and 75 years of age during the year of encounter."}, :patient_is_fee_for_service=>{:pass=>false, :reason=>"Patient must be Medicare Part B fee for service"}
+        expect(measure.validate_denominators(failing_denominator_answers)).to eq :icd9_code=>{:pass=>false, :reason=>"Patient must have one of the available ICD-9 codes."}, :cpt2_code=>{:pass=>false, :reason=>"Patient must have one of the available CPT-II codes."}, :patient_age=>{:pass=>false, :reason=>"Patient was not between 18 and 75 years of age during the year of encounter."}, :patient_is_fee_for_service=>{:pass=>false, :reason=>"Only Medicare Fee for Service patients are eligible"}
       end
 
       it 'returns a failing validation with reason if any denominator fails' do
-        expect(measure.validate_denominators(failing_ffs_denominator_answers)).to eq :icd9_code=>{:pass=>true}, :cpt2_code=>{:pass=>true}, :patient_age=>{:pass=>true}, :patient_is_fee_for_service=>{:pass=>false, :reason=>"Patient must be Medicare Part B fee for service"}
+        expect(measure.validate_denominators(failing_ffs_denominator_answers)).to eq :icd9_code=>{:pass=>true}, :cpt2_code=>{:pass=>true}, :patient_age=>{:pass=>true}, :patient_is_fee_for_service=>{:pass=>false, :reason=>"Only Medicare Fee for Service patients are eligible"}
       end
 
     end
