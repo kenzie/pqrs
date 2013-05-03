@@ -64,6 +64,13 @@ class IndividualMeasure
     end
   end
 
+  def patient_must_be_fee_for_service
+    denominator_validation :patient_is_fee_for_service do |answers|
+      next {:pass => true} if answers[:patient_is_fee_for_service] == true
+      {:pass => false, :reason => "Patient must be Medicare Part B fee for service"}
+    end
+  end
+
   def numerator_question(qid, args)
     self.numerator_fields[qid] = args
   end

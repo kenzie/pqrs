@@ -9,11 +9,7 @@ icd9_code %w[250.00 250.01 250.02 250.03 250.10 250.11 250.12 250.13 250.20 250.
 cpt2_code %w[97802 97803 97804 99201 99202 99203 99204 99205 99212 99213 99214 99215 99304 99305 99306 99307 99308 99309 99310 99324 99325 99326 99327 99328 99334 99335 99336 99337 99341 99342 99343 99344 99345 99347 99348 99349 99350 G0270 G0271]
 
 patient_age_between 18,75
-
-denominator_validation :patient_is_fee_for_service do |answers|
-  next {:pass => true} if answers[:patient_is_fee_for_service] == true
-  {:pass => false, :reason => "Patient must be Medicare Part B fee for service"}
-end
+patient_must_be_fee_for_service
 
 # numerator
 
