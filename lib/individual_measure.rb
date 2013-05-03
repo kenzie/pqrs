@@ -38,8 +38,23 @@ class IndividualMeasure
   end
 
   def denominator_question(qid, args)
-    # TODO add validation (icd9, cpt2)
     self.denominator_fields[qid] = args
+  end
+
+  def icd9_code(codes)
+    denominator_question(:icd9_code, :label => 'ICD-9 Code', :collection => codes)
+    denominator_validation :icd9_code do |answers|
+      next {:pass => true} if codes.include? answers[:icd9_code]
+      {:pass => false, :reason => "Patient must have one of the available ICD-9 codes."}
+    end
+  end
+
+  def cpt2_code(codes)
+    denominator_question(:cpt2_code, :label => 'CPT-II Code', :collection => codes)
+    denominator_validation :cpt2_code do |answers|
+      next {:pass => true} if codes.include? answers[:cpt2_code]
+      {:pass => false, :reason => "Patient must have one of the available CPT-II codes."}
+    end
   end
 
   def numerator_question(qid, args)
