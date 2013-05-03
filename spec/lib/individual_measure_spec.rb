@@ -141,7 +141,7 @@ describe IndividualMeasure do
       expect(measure.validate_numerators(numerator_answers)).to eq ["1234F-2P", :exclude]
     end
 
-    it 'returns ["1234F-23", :exclude] if numerator is excluded (<7)' do
+    it 'returns ["1234F-3P", :exclude] if numerator is excluded (<7)' do
       numerator_answers = {:q1 => 6, :q2 => nil}
       expect(measure.validate_numerators(numerator_answers)).to eq ["1234F-3P", :exclude]
     end
