@@ -131,7 +131,7 @@ describe IndividualMeasure do
 
   describe 'validate_numerators' do
 
-    it 'returns ["1234", :pass] if numerator passes (>9)' do
+    it 'returns ["1234F", :pass] if numerator passes (>9)' do
       numerator_answers = {:q1 => 9.1, :q2 => nil}
       expect(measure.validate_numerators(numerator_answers)).to eq ["1234F", :pass]
     end
