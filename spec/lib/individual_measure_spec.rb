@@ -65,7 +65,7 @@ describe IndividualMeasure do
 
   end
 
-  context 'denominator_fields' do
+  describe 'denominator_fields' do
 
     it 'has 2 questions' do
       expect(measure.denominator_fields.size).to eq 2
@@ -81,7 +81,7 @@ describe IndividualMeasure do
 
   end
 
-  context 'numerator_fields' do
+  describe 'numerator_fields' do
 
     it 'has 2 questions' do
       expect(measure.numerator_fields.size).to eq 2
@@ -97,35 +97,39 @@ describe IndividualMeasure do
 
   end
 
-  context 'validate_denominators' do
+  context 'denominator validations' do
 
-    it 'returns passing validations if denominators all pass' do
-      denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => true, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
-      expect(measure.validate_denominators(denominator_answers)).to eq :patient_is_fee_for_service => {:pass => true}, :patient_age => {:pass => true}
+    passing_denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => true, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
+    failing_denominator_answers = {:service_date => Date.parse('2013-01-01'), :patient_is_fee_for_service => false, :patient_age => 12, :icd9_code => '150.00', :cpt2_code => '12345'}
+    failing_ffs_denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => false, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
+
+    describe 'validate_denominators' do
+
+      it 'returns passing validations if denominators all pass' do
+        expect(measure.validate_denominators(passing_denominator_answers)).to eq :patient_is_fee_for_service => {:pass => true}, :patient_age => {:pass => true}
+      end
+
+      it 'returns failing validations with reasons if all denominators fail' do
+        expect(measure.validate_denominators(failing_denominator_answers)).to eq :patient_is_fee_for_service => {:pass => false, :reason => 'Patient must be Medicare Part B fee for service'}, :patient_age => {:pass => false, :reason => 'Patient must be between 18 and 75 years old at time of encounter'}
+      end
+
+      it 'returns a failing validation with reason if any denominator fails' do
+        expect(measure.validate_denominators(failing_ffs_denominator_answers)).to eq :patient_is_fee_for_service => {:pass => false, :reason => 'Patient must be Medicare Part B fee for service'}, :patient_age => {:pass => true}
+      end
+
     end
 
-    it 'returns failing validations with reasons if all denominators fail' do
-      denominator_answers = {:service_date => Date.parse('2013-01-01'), :patient_is_fee_for_service => false, :patient_age => 12, :icd9_code => '150.00', :cpt2_code => '12345'}
-      expect(measure.validate_denominators(denominator_answers)).to eq :patient_is_fee_for_service => {:pass => false, :reason => 'Patient must be Medicare Part B fee for service'}, :patient_age => {:pass => false, :reason => 'Patient must be between 18 and 75 years old at time of encounter'}
-    end
+    describe 'valid_denominators?' do
 
-    it 'returns a failing validation with reason if any denominator fails' do
-      denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => false, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
-      expect(measure.validate_denominators(denominator_answers)).to eq :patient_is_fee_for_service => {:pass => false, :reason => 'Patient must be Medicare Part B fee for service'}, :patient_age => {:pass => true}
+      it 'returns true if all denominators are valid' do
+        expect(measure.valid_denominators?(passing_denominator_answers)).to eq true
+      end
+
     end
 
   end
 
-  context 'valid_denominators?' do
-
-    it 'returns true if all denominators are valid' do
-      denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => true, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
-      expect(measure.valid_denominators?(denominator_answers)).to eq true
-    end
-
-  end
-
-  context 'validate_numerators' do
+  describe 'validate_numerators' do
 
     it 'returns ["1234", :pass] if numerator passes (>9)' do
       numerator_answers = {:q1 => 9.1, :q2 => nil}
