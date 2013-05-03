@@ -34,11 +34,11 @@ describe IndividualMeasure do
       end
 
       it "defines a denominator age validation" do
-        expect(measure.denominator_validations[:age].class).to eq Proc
+        expect(measure.denominator_validations[:patient_age].class).to eq Proc
       end
 
       it "defines a denominator ffs validation" do
-        expect(measure.denominator_validations[:ffs].class).to eq Proc
+        expect(measure.denominator_validations[:patient_is_fee_for_service].class).to eq Proc
       end
 
       it "defines a numerator validation" do
@@ -99,19 +99,28 @@ describe IndividualMeasure do
 
   context 'validate_denominators' do
 
-    it 'returns true if denominators all pass' do
+    it 'returns passing validations if denominators all pass' do
       denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => true, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
-      expect(measure.validate_denominators(denominator_answers)).to eq true
+      expect(measure.validate_denominators(denominator_answers)).to eq :patient_is_fee_for_service => {:pass => true}, :patient_age => {:pass => true}
     end
 
-    it 'returns false if all denominators fail' do
+    it 'returns failing validations with reasons if all denominators fail' do
       denominator_answers = {:service_date => Date.parse('2013-01-01'), :patient_is_fee_for_service => false, :patient_age => 12, :icd9_code => '150.00', :cpt2_code => '12345'}
-      expect(measure.validate_denominators(denominator_answers)).to eq false
+      expect(measure.validate_denominators(denominator_answers)).to eq :patient_is_fee_for_service => {:pass => false, :reason => 'Patient must be Medicare Part B fee for service'}, :patient_age => {:pass => false, :reason => 'Patient must be between 18 and 75 years old at time of encounter'}
     end
 
-    it 'returns false if any denominator fails' do
+    it 'returns a failing validation with reason if any denominator fails' do
       denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => false, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
-      expect(measure.validate_denominators(denominator_answers)).to eq false
+      expect(measure.validate_denominators(denominator_answers)).to eq :patient_is_fee_for_service => {:pass => false, :reason => 'Patient must be Medicare Part B fee for service'}, :patient_age => {:pass => true}
+    end
+
+  end
+
+  context 'valid_denominators?' do
+
+    it 'returns true if all denominators are valid' do
+      denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => true, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
+      expect(measure.valid_denominators?(denominator_answers)).to eq true
     end
 
   end

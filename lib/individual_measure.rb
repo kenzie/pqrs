@@ -38,6 +38,7 @@ class IndividualMeasure
   end
 
   def denominator_question(qid, args)
+    # TODO add validation (icd9, cpt2)
     self.denominator_fields[qid] = args
   end
 
@@ -54,11 +55,19 @@ class IndividualMeasure
   end
 
   def validate_denominators(denominator_answers)
-    denominator_validations.all? { |den| den.last.call(denominator_answers) == true }
+    validations = {}
+    denominator_validations.each do |key,den|
+      validations[key] = den.call(denominator_answers)
+    end
+    validations
   end
 
   def validate_numerators(numerator_answers)
     numerator_validations.call(numerator_answers)
+  end
+
+  def valid_denominators?(denominator_answers)
+    validate_denominators(denominator_answers).all? {|den| den.last[:pass] == true }
   end
 
   def data_file_path
