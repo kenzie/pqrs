@@ -18,7 +18,7 @@ class IndividualEncounter
   end
 
   def eligible?
-    measure.validate_denominators_for(self.denominator_answers)
+    measure.validate_denominators(self.denominator_answers)
   end
 
 end

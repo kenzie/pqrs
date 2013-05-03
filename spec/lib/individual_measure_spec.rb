@@ -88,21 +88,45 @@ describe IndividualMeasure do
 
   end
 
-  context 'validate_denominators_for' do
+  context 'validate_denominators' do
 
     it 'returns true if denominators all pass' do
       denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => true, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
-      expect(measure.validate_denominators_for(denominator_answers)).to eq true
+      expect(measure.validate_denominators(denominator_answers)).to eq true
     end
 
     it 'returns false if all denominators fail' do
       denominator_answers = {:service_date => Date.parse('2013-01-01'), :patient_is_fee_for_service => false, :patient_age => 12, :icd9_code => '150.00', :cpt2_code => '12345'}
-      expect(measure.validate_denominators_for(denominator_answers)).to eq false
+      expect(measure.validate_denominators(denominator_answers)).to eq false
     end
 
     it 'returns false if any denominator fails' do
       denominator_answers = {:service_date => Date.parse('2012-01-01'), :patient_is_fee_for_service => false, :patient_age => 25, :icd9_code => '250.00', :cpt2_code => '97802'}
-      expect(measure.validate_denominators_for(denominator_answers)).to eq false
+      expect(measure.validate_denominators(denominator_answers)).to eq false
+    end
+
+  end
+
+  context 'validate_numerators' do
+
+    it 'returns ["1234", :pass] if numerator passes (>9)' do
+      numerator_answers = {:q1 => 9.1, :q2 => nil}
+      expect(measure.validate_numerators(numerator_answers)).to eq ["1234F", :pass]
+    end
+
+    it 'returns ["1234F-2P", :exclude] if numerator is excluded (7..9)' do
+      numerator_answers = {:q1 => 8.5, :q2 => nil}
+      expect(measure.validate_numerators(numerator_answers)).to eq ["1234F-2P", :exclude]
+    end
+
+    it 'returns ["1234F-23", :exclude] if numerator is excluded (<7)' do
+      numerator_answers = {:q1 => 6, :q2 => nil}
+      expect(measure.validate_numerators(numerator_answers)).to eq ["1234F-3P", :exclude]
+    end
+
+    it 'returns ["1234F-8P", :fail] if numerator fails' do
+      numerator_answers = {:q1 => nil, :q2 => true}
+      expect(measure.validate_numerators(numerator_answers)).to eq ["1234F-8P", :fail]
     end
 
   end

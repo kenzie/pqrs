@@ -52,8 +52,12 @@ class IndividualMeasure
     self.numerator_validations = block
   end
 
-  def validate_denominators_for(denominator_answers)
+  def validate_denominators(denominator_answers)
     denominator_validations.all? { |den| den.last.call(denominator_answers) == true }
+  end
+
+  def validate_numerators(numerator_answers)
+    numerator_validations.call(numerator_answers)
   end
 
   def data_file_path

@@ -21,14 +21,14 @@ end
 numerator_question :q1, :label => "Most recent Hemoglobin A1c level", :as => :numeric
 numerator_question :q2, :label => "Hemoglobin A1c test not performed?", :as => :boolean, :wrapper => :checkbox
 
-numerator_validation do |encounter|
-  if encounter.q1 && encounter.q1 > 9.0
-    ["3046F", :pass]
-  elsif encounter.q1 && encounter.q1.between?(7.0, 9.0)
-    ["3045F", :fail]
-  elsif encounter.q1 && encounter.q1 < 7.0
-    ["3044F", :fail]
-  elsif encounter.q2
-    ["3046F-8P", :pass]
+numerator_validation do |numerator|
+  if numerator[:q1] && numerator[:q1] > 9.0
+    ["1234F", :pass]
+  elsif numerator[:q1] && numerator[:q1].between?(7.0, 9.0)
+    ["1234F-2P", :exclude]
+  elsif numerator[:q1] && numerator[:q1] < 7.0
+    ["1234F-3P", :exclude]
+  elsif numerator[:q2]
+    ["1234F-8P", :fail]
   end
 end
