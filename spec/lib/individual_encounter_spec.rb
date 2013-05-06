@@ -110,6 +110,40 @@ describe IndividualEncounter do
       expect(encounter.performance).to eq :fail
     end
 
+    it 'returns :incomplete if numerator is incomplete' do
+      encounter.numerator_answers = {:q1 => nil, :q2 => nil}
+      expect(encounter.performance).to eq :incomplete
+    end
+
+  end
+
+  describe '.status' do
+
+    it 'returns :ineligible if encounter.eligible? is false' do
+      encounter.stub(:eligible?, false)
+      expect(encounter.status).to eq :ineligible
+    end
+
+    it 'returns :eligible if encounter.eligible? is true but performance is :incomplete' do
+      encounter.stub(:eligible? => true, :performance => :incomplete)
+      expect(encounter.status).to eq :eligible
+    end
+
+    it 'returns :performance_met if encounter.eligible? is true and performance is :pass' do
+      encounter.stub(:eligible? => true, :performance => :pass)
+      expect(encounter.status).to eq :performance_met
+    end
+
+    it 'returns :performance_not_met if encounter.eligible? is true and performance is :fail' do
+      encounter.stub(:eligible? => true, :performance => :fail)
+      expect(encounter.status).to eq :performance_not_met
+    end
+
+    it 'returns :performance_excluded if encounter.eligible? is true and performance is :exclude' do
+      encounter.stub(:eligible? => true, :performance => :exclude)
+      expect(encounter.status).to eq :performance_excluded
+    end
+
   end
 
 end

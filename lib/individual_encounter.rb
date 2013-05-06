@@ -22,7 +22,17 @@ class IndividualEncounter
   end
 
   def performance
-    measure.validate_numerators(self.numerator_answers).last
+    # :incomplete if submitted numerator answers can't be used to calculate numerator status
+    perf = measure.validate_numerators(self.numerator_answers)
+    perf.nil? ? :incomplete : perf.last
+  end
+
+  def status
+    return :performance_excluded if eligible? && performance == :exclude
+    return :performance_not_met if eligible? && performance == :fail
+    return :performance_met if eligible? && performance == :pass
+    return :eligible if eligible?
+    :ineligible
   end
 
 end
