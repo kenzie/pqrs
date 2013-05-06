@@ -2,7 +2,7 @@ require 'provider'
 
 describe Provider do
 
-  subject(:provider) { Provider.new(:name => 'Dr. Michael Smith', :npi => '123456789', :tin => '1234567890', :measure_preference => 'individual') }
+  subject(:provider) { Provider.new(:name => 'Dr. Michael Smith', :npi => '123456789', :tin => '1234567890', :measure_preference => 'individual', :organization_id => 99) }
 
   describe '#new' do
 
@@ -20,6 +20,10 @@ describe Provider do
 
     it 'has a measure_preference' do
       expect(provider.measure_preference).to eq 'individual'
+    end
+
+    it 'has an organization_id' do
+      expect(provider.organization_id).to eq 99
     end
 
   end
